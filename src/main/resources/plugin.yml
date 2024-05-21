@@ -1,0 +1,43 @@
+name: aml
+version: '${project.version}'
+main: yuisanae2f.aml.Aml
+api-version: '1.20'
+
+commands:
+  lorise:
+    description:
+
+      Places the lore to go.
+    usage:
+
+      /<command> <player> <tag> <value>
+      
+      /<command> <player> <tag>
+
+
+  loreAnvilise:
+    description:
+
+      Changes the name of the tag... 
+      
+      or just peep them.
+    usage:
+
+      /<command> tag <tag>
+      
+      /<command> tag <tag> <new tag>
+      
+      /<command> enum <enum>
+      
+      /<command> enum <enum> <new tag>
+      
+      /<command>
+
+  loreStatus:
+    description:
+
+      Checks thy status.
+    usage:
+      /<command>
+
+      /<command> <player>
