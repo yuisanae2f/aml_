@@ -1,11 +1,12 @@
 package yuisanae2f.aml.ev;
 
-import org.bukkit.entity.Player;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.projectiles.ProjectileSource;
 import yuisanae2f.aml.cInventory;
 
 import java.util.List;
@@ -13,51 +14,33 @@ import java.util.List;
 import static yuisanae2f.aml.Aml.cout;
 
 public class cAttackEv implements Listener {
-    private class atkReturn {
-        public final double
-                atk;
+    private static class atkReturn {
+        public double
+                atk = 0,
+                vamp = 0;
 
-        public atkReturn(double atk) {
-            this.atk = atk;
-        }
+        public atkReturn() {}
     }
-
-
 
     @EventHandler
     public void onAtk(EntityDamageByEntityEvent e) {
-        atkReturn res;
-        InventoryHolder atk, tar;
+        cInventory atk = null, tar = new cInventory(e.getEntity());
 
-        if(
-                e.getDamager() instanceof InventoryHolder
-            &&  e.getEntity() instanceof InventoryHolder
-        ) {
-            atk = (InventoryHolder)e.getDamager();
-            tar = (InventoryHolder)e.getEntity();
+        if(e.getDamager() instanceof Projectile proj) {
+            ProjectileSource source = proj.getShooter();
+            if(source instanceof Entity ntt)
+                atk = new cInventory(ntt);
+            else if (source instanceof Block block)
+                atk = new cInventory(block);
+        } else atk = new cInventory(e.getDamager());
 
-            res = this.dmg(new cInventory(atk.getInventory()), new cInventory(tar.getInventory()));
-        } else if (
-                e.getDamager() instanceof Projectile proj
-                && e.getEntity() instanceof InventoryHolder
-        ) {
-            tar = (InventoryHolder)e.getEntity();
-            if(proj.getShooter() instanceof InventoryHolder) {
-                atk = (InventoryHolder)proj.getShooter();
-                res = this.dmg(new cInventory(atk.getInventory()), new cInventory(tar.getInventory()));
-            } else return;
-        } else return;
+        atkReturn res = this.dmg(atk, tar);
 
-        
         cout.info("attacker: ");
-        cout.info(s(new cInventory(atk.getInventory()).getStatus().lorise()));
+        cout.info(s(atk.getStatus().lorise()));
 
         cout.info("defender: ");
-        cout.info(s(new cInventory(tar.getInventory()).getStatus().lorise()));
-        if (atk instanceof Player player) {
-
-            player.sendMessage("dmg:" + res.atk);
-        }
+        cout.info(s(tar.getStatus().lorise()));
     }
 
     private String s(List<String> a) {
@@ -71,7 +54,7 @@ public class cAttackEv implements Listener {
     }
 
     private atkReturn dmg(cInventory atk, cInventory tar) {
-
-        return new atkReturn(1.0);
+        atkReturn rtn = new atkReturn();
+        return rtn;
     }
 }

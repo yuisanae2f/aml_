@@ -19,12 +19,13 @@ public class FStream {
         fwrite.close();
     }
 
-    public static void load(String name) throws IOException {
+    public static rTags load(String name) throws IOException {
+        rTags old = new rTags(StatusRule.tagGlobal);
         File file = new File(dir, name);
 
         if(file.createNewFile()) {
             save(name);
-            return;
+            return old;
         }
 
         BufferedReader fread = new BufferedReader(new FileReader(file));
@@ -36,5 +37,6 @@ public class FStream {
         }
 
         fread.close();
+        return old;
     }
 }

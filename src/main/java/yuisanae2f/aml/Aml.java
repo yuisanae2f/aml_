@@ -35,8 +35,6 @@ public final class Aml extends JavaPlugin {
         } catch (IOException e) {
             Bukkit.getServer().getLogger().fine("hi");
         }
-
-
     }
 
     @Override

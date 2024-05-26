@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import yuisanae2f.aml.cCmd;
 import yuisanae2f.aml.cInventory;
 import yuisanae2f.aml.iCmd;
-import yuisanae2f.aml.rStatus;
 
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class LoreStatus {
                 default: return false;
             }
 
-            List<String> lore = new cInventory(player.getInventory()).getStatus().lorise();
+            List<String> lore = new cInventory(player).getStatus().lorise();
             sender.sendMessage(player.getName() + "'s current status:");
 
             for(String str : lore) {

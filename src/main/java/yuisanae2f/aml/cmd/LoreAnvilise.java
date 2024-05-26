@@ -1,12 +1,11 @@
 package yuisanae2f.aml.cmd;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import yuisanae2f.aml.*;
 
 import java.io.*;
 import java.util.Objects;
+
+import static yuisanae2f.aml.Aml.cout;
 
 public class LoreAnvilise {
 
@@ -16,7 +15,8 @@ public class LoreAnvilise {
             eStatus tag = null;
 
             switch(argv.length) {
-                case 2: case 3: {
+                case 2: case 3:
+                {
                     switch(argv[0]) {
                         case "enum": {
                             try {
@@ -25,7 +25,6 @@ public class LoreAnvilise {
                                 return false;
                             }
                         } break;
-
                         case "tag": {
                             tag = Tags.enumise(argv[1]);
                             if (tag == null) {
@@ -51,6 +50,9 @@ public class LoreAnvilise {
                 } break;
                 case 2: {
                     switch(argv[0]) {
+                        case "load": case "save": default:
+                            return false;
+
                         case "enum":
                             sender.sendMessage(Tags.toString(tag));
                             break;
@@ -61,33 +63,38 @@ public class LoreAnvilise {
                     }
                 } break;
                 case 3: {
+                    switch(argv[0]) {
+                        case "load": {
+                            try {
+                                FStream.load(argv[1]);
+                                return true;
+                            } catch (IOException e) {
+                                cout.info(e.toString());
+                                return false;
+                            }
+                        }
+                        case "save": {
+                            try {
+                                FStream.save(argv[1]);
+                                return true;
+                            } catch (IOException e) {
+                                cout.info(e.toString());
+                                return false;
+                            }
+                        }
+                        default: break;
+                    }
+
                     if (Objects.equals(Tags.toString(tag), argv[2]))
                         break;
 
                     rTags old = new rTags(StatusRule.tagGlobal);
                     Tags.change(tag, argv[2]);
 
-                    for(Player player : Bukkit.getOnlinePlayers()) {
-                        new cInventory(player.getInventory()).changeTag(old);
-                        new cInventory(player.getEnderChest()).changeTag(old);
-                    }
+                    boolean bool = cInventory.changeAll(old);
 
-                    for(OfflinePlayer oplayer : Bukkit.getOfflinePlayers()) {
-                        Player player = oplayer.getPlayer();
-
-                        if(player == null) continue;
-
-                        new cInventory(player.getInventory()).changeTag(old);
-                        new cInventory(player.getEnderChest()).changeTag(old);
-                    }
-
-                    try {
-                        FStream.save(Aml.Manual);
-                    } catch(Exception e) {
+                    if(!bool)
                         sender.sendMessage("save failed");
-                        sender.sendMessage(e.getMessage());
-                        return true;
-                    }
 
                     sender.sendMessage(old.tags()[tag.ordinal()] + " has changed to " + StatusRule.tagGlobal.tags()[tag.ordinal()]);
                 } break;
