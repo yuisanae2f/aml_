@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import yuisanae2f.aml.cInventory;
+import yuisanae2f.aml.eStatus;
 
 import java.util.List;
 
@@ -45,7 +46,6 @@ public class cAttackEv implements Listener {
 
     private String s(List<String> a) {
         StringBuilder rtn = new StringBuilder();
-
         for(String str : a) {
             rtn.append(str).append('\n');
         }
@@ -55,6 +55,9 @@ public class cAttackEv implements Listener {
 
     private atkReturn dmg(cInventory atk, cInventory tar) {
         atkReturn rtn = new atkReturn();
+
+        atk.getStatus().get(eStatus.ATK_DMG_MAX);
+
         return rtn;
     }
 }

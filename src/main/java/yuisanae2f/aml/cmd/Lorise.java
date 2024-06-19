@@ -1,6 +1,7 @@
 package yuisanae2f.aml.cmd;
 
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,11 +17,15 @@ public class Lorise {
         public boolean exe(CommandSender sender, String[] argv) {
             sender.sendMessage("You've activated the command /lorise.");
 
+            
+
             switch(argv.length) {
                 case 2: case 3:
                     break;
                 default: return false;
             }
+
+
 
             Player player;
 
