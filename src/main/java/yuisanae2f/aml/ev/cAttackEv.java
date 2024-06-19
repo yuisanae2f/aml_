@@ -15,10 +15,12 @@ import java.util.List;
 import static yuisanae2f.aml.Aml.cout;
 
 public class cAttackEv implements Listener {
-    private static class atkReturn {
+    private static abstract class atkReturn {
         public double
                 atk = 0,
                 vamp = 0;
+
+        abstract double trueDmg(double a);
 
         public atkReturn() {}
     }
@@ -54,7 +56,12 @@ public class cAttackEv implements Listener {
     }
 
     private atkReturn dmg(cInventory atk, cInventory tar) {
-        atkReturn rtn = new atkReturn();
+        atkReturn rtn = new atkReturn() {
+            @Override
+            double trueDmg(double a) {
+                return a > 10 ? a / 10 : 1;
+            }
+        };
 
         atk.getStatus().get(eStatus.ATK_DMG_MAX);
 
