@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import yuisanae2f.aml.cInventory;
+import yuisanae2f.aml.cStatus;
 import yuisanae2f.aml.eStatus;
 
 import java.util.List;
@@ -28,22 +29,31 @@ public class cAttackEv implements Listener {
     @EventHandler
     public void onAtk(EntityDamageByEntityEvent e) {
         cInventory atk = null, tar = new cInventory(e.getEntity());
+        char Mode = 0; // Melee
 
         if(e.getDamager() instanceof Projectile proj) {
             ProjectileSource source = proj.getShooter();
-            if(source instanceof Entity ntt)
+            if(source instanceof Entity ntt) {
                 atk = new cInventory(ntt);
-            else if (source instanceof Block block)
+                Mode = 1; // Projectile
+            }
+
+            else if (source instanceof Block block) {
                 atk = new cInventory(block);
+                Mode = 1; // Block
+            }
+
+            else return; // wtf is that
         } else atk = new cInventory(e.getDamager());
 
-        atkReturn res = this.dmg(atk, tar);
+        atkReturn res = this.dmg(atk, tar, Mode);
 
         cout.info("attacker: ");
         cout.info(s(atk.getStatus().lorise()));
 
         cout.info("defender: ");
         cout.info(s(tar.getStatus().lorise()));
+
     }
 
     private String s(List<String> a) {
@@ -55,15 +65,30 @@ public class cAttackEv implements Listener {
         return rtn.toString();
     }
 
-    private atkReturn dmg(cInventory atk, cInventory tar) {
+    private atkReturn dmg(cInventory atk, cInventory tar, char mode) {
         atkReturn rtn = new atkReturn() {
             @Override
             double trueDmg(double a) {
-                return a > 10 ? a / 10 : 1;
+                if(a < 10) return 1;
+                return a / 10;
             }
         };
 
-        atk.getStatus().get(eStatus.ATK_DMG_MAX);
+        cStatus
+                Attacker = (cStatus)    atk.getStatus(),
+                Target = (cStatus)      atk.getStatus();
+
+        if (Attacker.attack_final() >= 10 || Target.get(eStatus.EVASION) <= Attacker.get(eStatus.HIT_RATE)) {
+            rtn.atk +=
+                    Attacker.attack_final() + (Attacker.attack_final() * Attacker.crit_final(Target));
+
+            rtn.atk -=
+                    Attacker.get(eStatus.ARMOUR_PIERCE) - Target.armour_final(Attacker) - Target.get(eStatus.DMG_REDUCE);
+
+            rtn.vamp = rtn.atk;
+
+            return rtn;
+        }
 
         return rtn;
     }

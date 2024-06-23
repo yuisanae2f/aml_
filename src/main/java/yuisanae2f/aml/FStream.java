@@ -1,7 +1,6 @@
 package yuisanae2f.aml;
 
 import java.io.*;
-import java.nio.CharBuffer;
 
 public class FStream {
     public static File dir;

@@ -21,7 +21,7 @@ import java.util.List;
 import static yuisanae2f.aml.StatusRule.tagGlobal;
 
 public class cInventory {
-    private cStatus status[];
+    private cStatus_r status[];
     private Inventory inventory;
     private EntityEquipment eq;
 
@@ -35,13 +35,13 @@ public class cInventory {
 
         int mdl = item.getItemMeta().getCustomModelData();
         if(((mdl >> e.ordinal()) & 1) == 1) {
-            cStatus itemStatus = new cStatus(StatusRule.ruleGlobal.o(tagGlobal, nullcheck));
+            cStatus_r itemStatus = new cStatus_r(StatusRule.ruleGlobal.o(tagGlobal, nullcheck));
             itemStatus.amplify(item.getAmount());
             status[e.ordinal()].addself(itemStatus);
         }
     }
     public cInventory(Entity entity) {
-        this.status = new cStatus[eInventory.LMT.ordinal()];
+        this.status = new cStatus_r[eInventory.LMT.ordinal()];
 
         if (entity instanceof InventoryHolder holder) {
             inventory = holder.getInventory();
@@ -74,10 +74,10 @@ public class cInventory {
             addSelf(item, eInventory.INVENTORY);
         }
     }
-    public cStatus getStatus() {
-        cStatus add = new cStatus();
+    public cStatus_r getStatus() {
+        cStatus_r add = new cStatus_r();
 
-        for(cStatus t : status) {
+        for(cStatus_r t : status) {
             add.addself(t);
         }
 
@@ -92,7 +92,7 @@ public class cInventory {
 
         List<String> lore = meta.getLore();
 
-        cStatus status = new cStatus(StatusRule.ruleGlobal.o(old, lore));
+        cStatus_r status = new cStatus_r(StatusRule.ruleGlobal.o(old, lore));
 
         meta.setLore(status.lorise());
         item.setItemMeta(meta);

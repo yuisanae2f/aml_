@@ -1,50 +1,37 @@
 package yuisanae2f.aml;
 
-import java.util.Arrays;
-import java.util.List;
+import static yuisanae2f.aml.Aml.rd;
 
-import static yuisanae2f.aml.StatusRule.tagGlobal;
-
-public class cStatus {
-    private rStatus field;
-
-    public cStatus() {
-        field = new rStatus(new double[eStatus.LMT.ordinal()]);
-        Arrays.fill(field.field(), 0);
+public class cStatus extends cStatus_r  {
+    private double _attack() {
+        return rd.nextDouble(this.get(eStatus.ATK_DMG_MAX), this.get(eStatus.ATK_DMG_MIN));
     }
 
-    public cStatus(List<String> str) {
-        field = StatusRule.ruleGlobal.o(tagGlobal, str);
+    public boolean is_crit(cStatus target) {
+        // 클라이언트가 제안한 공식
+        return rd.nextDouble() < this.get(eStatus.CRIT_CHANCE) + target.get(eStatus.CRIT_REDUCE);
     }
 
-    public cStatus(rStatus r) {
-        field = r;
+    public double crit_final(cStatus target) {
+        return
+                this.is_crit(target) ?
+                        this.get(eStatus.CRIT_PW) :
+                        0; // 이건가?
     }
 
-    public void addself(rStatus a) {
-        for (int i = 0; i < eStatus.LMT.ordinal(); i++)
-            field.field()[i] += a.field()[i];
+    public double attack_final() {
+        return _attack() + (_attack() * this.get(eStatus.CRIT_PW));
     }
 
-    public void addself(cStatus a) {
-        addself(a.field);
+    public double armour_final(cStatus target) {
+        return target.attack_final() - (target.attack_final() * this.get(eStatus.ARMOUR) - target.get(eStatus.ARMOUR_PIERCE)); // go, dart
     }
 
-    public void amplify(double a) {
-        for(int i = 0; i < field.field().length; i++) {
-            field.field()[i] *= a;
-        }
+    public double vamp_final() {
+        return _attack() * this.get(eStatus.VAMP_AMP) / this.get(eStatus.VAMP_DIV);
     }
 
-    public double get(eStatus id) {
-        return field.field()[id.ordinal()];
-    }
-
-    public double set(eStatus id, double v) {
-        return field.field()[id.ordinal()] = v;
-    }
-
-    public List<String> lorise() {
-        return StatusRule.ruleGlobal.i(tagGlobal, this.field);
+    public double inst_hp_reg_on_attack(double dmg) {
+        return this.get(eStatus.ABSORB) * dmg;
     }
 }

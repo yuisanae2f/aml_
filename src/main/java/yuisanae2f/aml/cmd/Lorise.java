@@ -1,7 +1,5 @@
 package yuisanae2f.aml.cmd;
 
-
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,15 +15,11 @@ public class Lorise {
         public boolean exe(CommandSender sender, String[] argv) {
             sender.sendMessage("You've activated the command /lorise.");
 
-            
-
             switch(argv.length) {
                 case 2: case 3:
                     break;
                 default: return false;
             }
-
-
 
             Player player;
 
@@ -51,9 +45,9 @@ public class Lorise {
 
             List<String> lore = meta.getLore();
 
-            cStatus status = null;
+            cStatus_r status = null;
             if ((meta.hasCustomModelData() && 0 != meta.getCustomModelData())) {
-                status = new cStatus(lore);
+                status = new cStatus_r(lore);
             }
 
             eStatus tag;
@@ -77,10 +71,12 @@ public class Lorise {
                 case 3: {
                     // set
                     if (status == null) {
-                        status = new cStatus();
+                        status = new cStatus_r();
                         meta.setCustomModelData(1);
                     }
 
+
+                    
                     double ezdicb = status.get(tag);
 
                     status.set(tag, Double.parseDouble(argv[2]));

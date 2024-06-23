@@ -8,11 +8,13 @@ import yuisanae2f.aml.cmd.Lorise;
 import yuisanae2f.aml.ev.cAttackEv;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.logging.Logger;
 
 public final class Aml extends JavaPlugin {
     public static String Manual = "AMLGlobalState.txt";
     public static Logger cout = Bukkit.getLogger();
+    public static Random rd = new Random();
 
     @Override
     public void onEnable() {
